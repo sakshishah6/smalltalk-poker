@@ -1,0 +1,62 @@
+isFlush: inputCardArr
+	"checks for case 5: flush"
+
+	| max card suitArr handArr clubsArr diamondsArr heartsArr spadesArr rankArr revRankArr |
+	
+	clubsArr := OrderedCollection new.
+	diamondsArr := OrderedCollection new.
+	heartsArr := OrderedCollection new.
+	spadesArr := OrderedCollection new.
+	
+	suitArr := OrderedCollection new.
+	suitArr addAll: #(0 0 0 0).	"order is 1-clubs, 2-diamonds, 3-hearts, 4-spades"
+	
+	1 to: (inputCardArr size) do: [ 
+		:x | card := inputCardArr at: x.
+		(card > 0) & (card < 14) 
+			ifTrue: [ 
+				suitArr at: 1 put: ((suitArr at: 1) + 1).
+				clubsArr add: card. 
+			].
+		(card > 13) & (card < 27)
+			ifTrue: [ 
+				suitArr at: 2 put: ((suitArr at: 2) + 1).
+				diamondsArr add: card. 
+			].
+		(card > 26) & (card < 40)
+			ifTrue: [ 
+				suitArr at: 3 put: ((suitArr at: 3) + 1).
+				heartsArr add: card. 
+			].
+		(card > 39) & (card < 53)
+			ifTrue: [ 
+				suitArr at: 4 put: ((suitArr at: 4) + 1).
+				spadesArr add: card. 
+			].
+	].
+
+	max := suitArr inject: 0 into: [ :a :c | a max: c ].
+
+	rankArr := OrderedCollection new.
+	rankArr addAll: #(0 0 0 0 0 0 0 0 0 0 0 0 0 0).
+	
+	revRankArr := OrderedCollection new.
+	
+	handArr := SortedCollection new.
+	handArr := SortedCollection sortBlock: [ :a :c | a <= c ].
+	
+	max >= 5 	ifFalse: [ ^ handArr ].
+	
+	(suitArr at: 1) >= 5 ifTrue: [ rankArr := (self sortByRank: clubsArr). ].
+	(suitArr at: 2) >= 5 ifTrue: [ rankArr := (self sortByRank: diamondsArr). ].
+	(suitArr at: 3) >= 5 ifTrue: [ rankArr := (self sortByRank: heartsArr). ].
+	(suitArr at: 4) >= 5 ifTrue: [ rankArr := (self sortByRank: spadesArr). ].
+	
+	revRankArr := (self getReversedArr: rankArr).
+	
+	1 to: 14 do: [ 
+		:x | card := (revRankArr at: x).
+		(card > 0) & (handArr size < 5) ifTrue: [ handArr add: card. ].
+	].
+	
+	^ handArr.

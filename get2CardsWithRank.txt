@@ -1,0 +1,23 @@
+get2CardsWithRank: inputArr
+	"returns an array with all the two cards that are the required ranks"
+			
+	| rankIndex rank inputCardArr card returnArr |
+	
+	rankIndex := (inputArr at: (inputArr size)).
+	inputCardArr := OrderedCollection new.
+	inputCardArr := inputArr copyFrom: 1 to: (inputArr size - 1).
+	
+	returnArr := SortedCollection new.
+	returnArr := SortedCollection sortBlock: [ :a :c | a <= c ].
+	
+	1 to: (inputCardArr size) do: [ 
+		:i | card := (inputCardArr at: i).
+		rank := (self getRank: card).
+		(rankIndex = rank) ifTrue: [
+			returnArr add: card. 
+		].
+	].
+	
+	returnArr := (returnArr copyFrom: 1 to: 2).
+
+	^ returnArr.

@@ -1,0 +1,36 @@
+isPair: inputCardArr
+	"checks for full house (case 4)"
+			
+	| rank rankCountArr rankAndCardsArr handArr card |
+	
+	rankCountArr := OrderedCollection new.
+	rankCountArr := (self countEachRank: inputCardArr).
+	
+	rankAndCardsArr := OrderedCollection new.
+	
+	handArr := SortedCollection new.
+	handArr := SortedCollection sortBlock: [ :a :c | a <= c ].
+
+	((rankCountArr occurrencesOf: 2) = 1) 
+	ifTrue: [  
+		"get the pair"
+		rank := (rankCountArr indexOf: 2).
+		rankAndCardsArr := inputCardArr copyFrom: 1 to: (inputCardArr size).
+		rankAndCardsArr add: rank.
+		handArr addAll: (self get2CardsWithRank: rankAndCardsArr).
+        rankAndCardsArr remove: rank.
+
+		"remove the cards the handArr already contains"
+		1 to: (inputCardArr size) do: [
+			:n | card := (inputCardArr at: n).
+			(handArr includes: card) ifTrue: [ 
+				rankAndCardsArr remove: card ifAbsent: [].
+			]
+		].
+		
+		"get the highest card left"
+		rankAndCardsArr add: 300.
+		handArr addAll: (self getHighestCards: rankAndCardsArr). 
+	].
+
+	^ handArr.

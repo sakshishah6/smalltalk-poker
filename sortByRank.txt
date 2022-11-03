@@ -1,0 +1,36 @@
+sortByRank: inputCardArr
+	"sorts the cards in the input card array by their rank"
+	
+	| rankArr remainder currentCard |
+	
+	rankArr := OrderedCollection new.
+	rankArr addAll: #(0 0 0 0 0 0 0 0 0 0 0 0 0 0). "index 1 and 14 are both for aces"
+	
+	remainder := 0.
+	
+	1 to: (inputCardArr size) do: [ 
+		
+		:x | currentCard := (inputCardArr at: x).
+		remainder := (currentCard % 13).
+				
+		"for aces (higher + lower)"
+		(remainder = 1) ifTrue: [ 
+			(rankArr at: 1) < (currentCard) ifTrue: [ rankArr at: 1 put: currentCard. ].
+			(rankArr at: 14) < (currentCard) ifTrue: [ rankArr at: 14 put: currentCard. ].
+		].
+
+		"for king"
+		(remainder = 0) ifTrue: [ 
+			(rankArr at: 13) < (currentCard) ifTrue: [ rankArr at: 13 put: currentCard. ].
+		].
+		"for two to queen"
+		(remainder > 1) ifTrue: [ 
+			2 to: 12 do: [ 
+				:i | (remainder = i) ifTrue: [ 
+					(rankArr at: i) < (currentCard) ifTrue: [ rankArr at: i put: currentCard. ].
+				].
+			].
+		].
+	].
+	
+	^ rankArr.

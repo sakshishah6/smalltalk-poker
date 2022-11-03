@@ -1,0 +1,13 @@
+createIntArr
+	"creates an array of 9 integers to use as the input cards"
+
+	| intArr r |
+	intArr := OrderedCollection new.
+	9 timesRepeat: [ 
+		r := 52 atRandom.
+		[intArr includes: r] whileTrue: [ 
+			r := 52 atRandom.
+		].
+		intArr add: r 
+	].
+	^ intArr.

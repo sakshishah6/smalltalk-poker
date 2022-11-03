@@ -1,0 +1,35 @@
+getHighestCards: inputArr
+	"returns the highest card"	
+			
+	| x rankArr revRankArr outputArr numOfCards card returnArr |
+	
+	numOfCards := (inputArr at: (inputArr size)) / 100.
+	inputArr remove: (numOfCards * 100).
+	
+	rankArr := OrderedCollection new.
+	rankArr := (self sortByRank: inputArr).
+	
+	revRankArr := OrderedCollection new.
+	revRankArr := (self getReversedArr: rankArr).
+	
+	outputArr := OrderedCollection new.
+	
+	card := 0.
+	1 to: (revRankArr size) do: [ 
+		:i | card := (revRankArr at: i).
+		(card > 0) ifTrue: [ 
+			(card = 14) 
+				ifTrue: [ outputArr add: 1. ]
+				ifFalse: [ outputArr add: card. ].
+		].
+	].
+	
+	returnArr := OrderedCollection new.
+
+	x := 1.
+	[ x <= numOfCards ] whileTrue: [ 
+		returnArr add: (outputArr at: x).
+		x := x + 1.
+	].
+
+	^ returnArr.

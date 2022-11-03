@@ -1,0 +1,13 @@
+getReversedArr: inputArr
+	"reverse the given array"
+			
+	| reversedArr j |
+	
+	reversedArr := OrderedCollection new.
+	j := (inputArr size).
+	j timesRepeat: [
+		reversedArr add: (inputArr at: j).
+		j := j - 1.
+	].
+
+	^ reversedArr.

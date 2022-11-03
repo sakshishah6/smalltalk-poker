@@ -1,0 +1,16 @@
+isStraightFlush: inputCardArr
+	"checks for straight flush (case 2)"
+	
+	| handArr halfwayArr |
+	
+	"first, check if it's a straight"
+	halfwayArr := SortedCollection new.
+	halfwayArr := SortedCollection sortBlock: [ :a :c | a <= c ].
+	halfwayArr := (self isStraight: inputCardArr).
+
+	"now check if it's a flush"
+	handArr := SortedCollection new.
+	handArr := SortedCollection sortBlock: [ :a :c | a <= c ].
+	handArr := (self isFlush: halfwayArr).
+
+	^ handArr.

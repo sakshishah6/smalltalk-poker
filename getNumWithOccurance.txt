@@ -1,0 +1,15 @@
+getNumWithOccurance: inputArr
+	"gets the number that appears n times in the array"
+			
+	| occurrance counter |
+	
+	occurrance := ((inputArr at: (inputArr size)) / 100).
+	
+	inputArr remove: (occurrance * 100).
+	
+	counter := 0.
+	(1 to: inputArr size) do: [ 
+		:i | 
+		counter := inputArr occurrencesOf: (inputArr at: i).
+		(counter = occurrance) ifTrue: [ ^ (inputArr at: i) ]
+	].

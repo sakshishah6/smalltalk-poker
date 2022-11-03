@@ -1,0 +1,36 @@
+player1: cardsArray
+	"checks the 7 cards that player 1 can choose from and finds the strongest poker hand"	
+	
+	| handArr | 
+	
+	handArr := OrderedCollection new.
+	
+	handArr := (self isRoyalFlush: cardsArray).
+	(handArr isEmpty) ifFalse: [ handArr add: 100. ^ handArr. ].
+		
+	handArr := (self isStraightFlush: cardsArray).
+	(handArr isEmpty) ifFalse: [ handArr add: 200. ^ handArr. ].
+		
+	handArr := (self isFourOfAKind: cardsArray).
+	(handArr isEmpty) ifFalse: [ handArr add: 300. ^ handArr. ].
+		
+	handArr := (self isFullHouse: cardsArray).
+	(handArr isEmpty) ifFalse: [ handArr add: 400. ^ handArr. ].
+		
+	handArr := (self isFlush: cardsArray).
+	(handArr isEmpty) ifFalse: [ handArr add: 500. ^ handArr. ].
+		
+	handArr := (self isStraight: cardsArray).
+	(handArr isEmpty) ifFalse: [ handArr add: 600. ^ handArr. ].
+		
+	handArr := (self isThreeOfAKind: cardsArray).
+	(handArr isEmpty) ifFalse: [ handArr add: 700. ^ handArr. ].
+		
+	handArr := (self isTwoPair: cardsArray).
+	(handArr isEmpty) ifFalse: [ handArr add: 800. ^ handArr. ].
+		
+	handArr := (self isPair: cardsArray).
+	(handArr isEmpty) ifFalse: [ handArr add: 900. ^ handArr. ].
+		
+	handArr := (self isHighCard: cardsArray).
+	handArr add: 1000. ^ handArr.

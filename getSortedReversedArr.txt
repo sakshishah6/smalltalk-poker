@@ -1,0 +1,10 @@
+getSortedReversedArr: inputArr
+	"sort the given array in reverse"
+			
+	| revSortedArr |
+	
+	revSortedArr := SortedCollection new.
+	revSortedArr := SortedCollection sortBlock: [ :a :c | a >= c ].
+	revSortedArr addAll: inputArr.
+	
+	^ revSortedArr.

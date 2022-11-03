@@ -1,0 +1,29 @@
+isFourOfAKind: inputCardArr
+	"checks for four of a kind (case 3)"
+			
+	| countRankArr handArr max rankIndex rank card |
+	
+	countRankArr := OrderedCollection new.
+	countRankArr := (self countEachRank: inputCardArr).
+	
+	max := countRankArr inject: 0 into: [ :a :c | a max: c ].
+	
+	handArr := SortedCollection new.
+	handArr := SortedCollection sortBlock: [ :a :c | a <= c ].
+	
+	"add the four of a kind cards and then the highest card"
+	(max = 4) ifTrue: [ 
+		rankIndex := (countRankArr indexOf: 4).
+		1 to: (inputCardArr size) do: [ 
+			:i | card := (inputCardArr at: i).
+			rank := (self getRank: card).
+			(rankIndex = rank) ifTrue: [
+				handArr add: card. 
+			].
+		].
+		handArr add: (inputCardArr at: (inputCardArr size)).
+
+		^ handArr.
+	].
+
+	^ handArr.

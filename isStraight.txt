@@ -1,0 +1,30 @@
+isStraight: inputCardArr
+	"checks for case 6: straight"
+	
+	| currentCard rankArr revRankArr handArr |
+	
+	rankArr := OrderedCollection new.
+	rankArr := (self sortByRank: inputCardArr).
+
+	revRankArr := OrderedCollection new.
+	revRankArr := (self getReversedArr: rankArr).
+	
+	handArr := SortedCollection new.
+	handArr := SortedCollection sortBlock: [ :a :c | a <= c ].
+	
+	1 to: (revRankArr size - 4) do: [ 
+		:x | currentCard := (revRankArr at: x).
+		(currentCard > 0) ifTrue: [ 
+			(((revRankArr at: (x+1)) > 0) & ((revRankArr at: (x+2)) > 0) & 
+			((revRankArr at: (x+3)) > 0) & ((revRankArr at: (x+4)) > 0)) ifTrue: [
+				handArr add: (revRankArr at: (x)).
+				handArr add: (revRankArr at: (x+1)).
+				handArr add: (revRankArr at: (x+2)).
+				handArr add: (revRankArr at: (x+3)).
+				handArr add: (revRankArr at: (x+4)).
+				^ handArr.
+			].
+		].
+	].
+	
+	^ handArr.

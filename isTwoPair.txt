@@ -1,0 +1,103 @@
+isTwoPair: inputCardArr 
+	"checks for two pairs (case 8)"
+			
+	| rank rankCountArr rankAndCardsArr handArr card |
+	
+	rankCountArr := OrderedCollection new.
+	rankCountArr := (self countEachRank: inputCardArr).
+	
+	handArr := SortedCollection new.
+	handArr := SortedCollection sortBlock: [ :a :c | a <= c ].
+
+	rankAndCardsArr := inputCardArr copyFrom: 1 to: (inputCardArr size).
+
+	"case 1: 2 cards + 2 cards + 2 cards"
+	((rankCountArr occurrencesOf: 2) = 3) 
+	ifTrue: [  
+		rank := (rankCountArr indexOf: 2).
+		"if the rank is an ace, add all occurances to the hand array"
+		(rank = 1) ifTrue: [ 
+			"add the ace pair"
+			rankAndCardsArr add: rank.
+			handArr addAll: (self get2CardsWithRank: rankAndCardsArr).
+			rankAndCardsArr remove: rank.
+			rankCountArr at: rank put: 1.
+			"next pair is lower so don't add this one"
+			rank := (rankCountArr indexOf: 2).
+			rankCountArr at: rank put: 1.
+			"add the higher pair"
+			rank := (rankCountArr indexOf: 2).
+			rankAndCardsArr add: rank.
+			handArr addAll: (self get2CardsWithRank: rankAndCardsArr).
+			rankAndCardsArr remove: rank.
+			rankCountArr at: rank put: 1.
+		]
+		ifFalse: [ 
+			"don't add the first pair because it's the lowest"
+			rank := (rankCountArr indexOf: 2).
+			rankCountArr at: rank put: 1.
+			"add the second pair"
+			rank := (rankCountArr indexOf: 2).
+			rankAndCardsArr add: rank.
+			handArr addAll: (self get2CardsWithRank: rankAndCardsArr).
+			rankAndCardsArr remove: rank.
+			rankCountArr at: rank put: 1.
+			"add the third pair"
+			rank := (rankCountArr indexOf: 2).
+			rankAndCardsArr add: rank.
+			handArr addAll: (self get2CardsWithRank: rankAndCardsArr).
+			rankAndCardsArr remove: rank.
+			rankCountArr at: rank put: 1.
+		].
+	].
+
+	"case 2: 2 cards + 2 cards"
+	((rankCountArr occurrencesOf: 2) = 2) 
+	ifTrue: [  
+		rank := (rankCountArr indexOf: 2).
+		"if the rank is an ace, add all occurances to the hand array"
+		(rank = 1) ifTrue: [ 
+			"add the ace pair"
+			rankAndCardsArr add: rank.
+			handArr addAll: (self get2CardsWithRank: rankAndCardsArr).
+			rankAndCardsArr remove: rank.
+			rankCountArr at: rank put: 1.
+			"add the next pair"
+			rank := (rankCountArr indexOf: 2).
+			rankAndCardsArr add: rank.
+			handArr addAll: (self get2CardsWithRank: rankAndCardsArr).
+			rankAndCardsArr remove: rank.
+			rankCountArr at: rank put: 1.
+		]
+		ifFalse: [ 
+			"add the first pair"
+			rank := (rankCountArr indexOf: 2).
+			rankAndCardsArr add: rank.
+			handArr addAll: (self get2CardsWithRank: rankAndCardsArr).
+			rankAndCardsArr remove: rank.
+			rankCountArr at: rank put: 1.
+			"add the second pair"
+			rank := (rankCountArr indexOf: 2).
+			rankAndCardsArr add: rank.
+			handArr addAll: (self get2CardsWithRank: rankAndCardsArr).
+			rankAndCardsArr remove: rank.
+			rankCountArr at: rank put: 1.
+		].
+	].
+		
+
+	"remove the cards the handArr already contains"
+	1 to: (inputCardArr size) do: [
+		:n | card := (inputCardArr at: n).
+		(handArr includes: card) ifTrue: [ 
+			rankAndCardsArr remove: card ifAbsent: [].
+		]
+	].
+
+	(handArr isEmpty) ifFalse: [ 
+		"get the highest card left"
+		rankAndCardsArr add: 100.
+		handArr addAll: (self getHighestCards: rankAndCardsArr).
+	].
+
+	^ handArr.

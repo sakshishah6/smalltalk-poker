@@ -1,0 +1,42 @@
+deal: intArr
+	"accepts a simple integer array as input and returns the winning hand"
+			
+	| p1 p2 p1Hand p2Hand winner combinedArr |
+	
+	"assign cards to player 1 and player 2"
+	p1 := OrderedCollection new.
+	p1 add: (intArr at: 1).
+	p1 add: (intArr at: 3).
+	5 to: 9 do: [:a | p1 add: (intArr at: a)].
+	
+	p2 := OrderedCollection new.
+	p2 add: (intArr at: 2).
+	p2 add: (intArr at: 4).
+	5 to: 9 do: [:a | p2 add: (intArr at: a)].
+	
+	"examine both players' cards"
+	p1Hand := self player1: p1.
+	p2Hand := self player2: p2.
+
+	winner := OrderedCollection new.
+
+	"compare both player's hands"
+	(p1Hand at: 6) < (p2Hand at: 6) ifTrue: [ 
+		winner := (self formatOutput: p1Hand).
+		^ winner.
+	].
+
+	(p1Hand at: 6) > (p2Hand at: 6) ifTrue: [ 
+		winner := (self formatOutput: p2Hand).
+		^ winner.
+	].
+
+	(p1Hand at: 6) = (p2Hand at: 6) ifTrue: [ 
+		combinedArr := OrderedCollection new.
+		1 to: 5 do: [ :x | combinedArr add: (p1Hand at: x) ].
+		1 to: 5 do: [ :x | combinedArr add: (p2Hand at: x) ].
+		combinedArr add: (p1Hand at: 6).
+		winner := (self tieBreaker: combinedArr).
+		winner := (self formatOutput: winner).
+		^ winner.
+	].

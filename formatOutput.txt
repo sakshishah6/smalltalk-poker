@@ -1,0 +1,23 @@
+formatOutput: inputArr
+	"formats the winning hand"
+			
+	| outputArr card rank suit str |
+	
+	outputArr := OrderedCollection new.
+	card := 0.
+	suit := 0.
+	str := String new.
+	rank := String new.
+	
+	1 to: 5 do: [ 
+		:x | card := (inputArr at: x).
+		rank := (self getRank: card) asString.
+		(card > 0) & (card < 14) ifTrue: [ suit := 'C' ].
+		(card > 13) & (card < 27) ifTrue: [ suit := 'D' ].
+		(card > 26) & (card < 40) ifTrue: [ suit := 'H' ].
+		(card > 39) & (card < 53) ifTrue: [ suit := 'S' ].
+		str := (rank, suit).
+		outputArr add: (str).
+	].
+
+	^ outputArr asArray .

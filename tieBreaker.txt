@@ -1,0 +1,168 @@
+tieBreaker: combinedArr
+	"determines which player has the higher hand if they have the same case/type of hand"
+			
+	| card p1Hand p1Reduced p2Hand p2Reduced case value1 value2 |
+	
+	p1Hand := combinedArr copyFrom: 1 to: 5.
+	p2Hand := combinedArr copyFrom: 6 to: 10.
+	
+	case := ((combinedArr at: 11) / 100). 
+	
+	p1Reduced := SortedCollection new.
+	p1Reduced := SortedCollection sortBlock: [ :a :c | a <= c ].
+	
+	p2Reduced := SortedCollection new.
+	p2Reduced := SortedCollection sortBlock: [ :a :c | a <= c ].
+	
+	"get both hands reduced to the lowest ranks (i.e. rank between 1 and 13)"
+	1 to: 5 do: [ 
+		:x | card := (p1Hand at: x).
+		((self getRank: card) = 1) & (case ~= 2) & (case ~= 6) 
+			ifTrue: [ p1Reduced add: 14 ]
+			ifFalse: [ p1Reduced add: (self getRank: card). ].
+	].
+	
+	1 to: 5 do: [ 
+		:x | card := (p2Hand at: x).
+		((self getRank: card) = 1) & (case ~= 2) & (case ~= 6) 
+			ifTrue: [ p2Reduced add: 14 ]
+			ifFalse: [ p2Reduced add: (self getRank: card). ].
+	].
+
+	"hands are both straight or staight flush"
+	(case = 2) | (case = 6) ifTrue: [ 
+		"if p1Hand contains an A and K, then return p1Hand"
+		(p1Reduced includes: 1) & (p1Reduced includes: 13) ifTrue: [ ^ p1Hand ].
+		"if p1Hand contains an A and 2, then this is the lowest straight so return p2Hand"
+		(p1Reduced includes: 1) & (p1Reduced includes: 2) ifTrue: [ ^ p2Hand ].
+		
+		"if p2Hand contains an A and K, then return p2Hand"
+		(p2Reduced includes: 1) & (p2Reduced includes: 13) ifTrue: [ ^ p2Hand ].
+		"if p2Hand contains an A and 2, then this is the lowest straight so return p1Hand"
+		(p2Reduced includes: 1) & (p2Reduced includes: 2) ifTrue: [ ^ p1Hand ].
+	].
+
+	"hands are both flush or high card"
+	(case = 5) | (case = 10) ifTrue: [ 
+		(p1Reduced at: 5) > (p2Reduced at: 5) ifTrue: [ ^ p1Hand ].
+		(p1Reduced at: 5) < (p2Reduced at: 5) ifTrue: [ ^ p2Hand ].
+	].
+
+	"hands are both four of a kind"
+	(case = 3) ifTrue: [ 
+		p1Reduced add: 400.
+		value1 := (self getNumWithOccurance: p1Reduced).
+		
+		p2Reduced add: 400.
+		value2 := (self getNumWithOccurance: p2Reduced).
+		
+		(value1 > value2) ifTrue: [ ^ p1Hand ].
+		(value1 < value2) ifTrue: [ ^ p2Hand ].
+		(value1 = value2) ifTrue: [ 
+			4 timesRepeat: [ 
+				p1Reduced remove: value1.
+				p2Reduced remove: value2.
+			].
+			(p1Reduced at: 1) > (p2Reduced at: 1) ifTrue: [ ^ p1Hand ].
+			(p1Reduced at: 1) < (p2Reduced at: 1) ifTrue: [ ^ p2Hand ].
+		].
+	].
+
+	"hands are both full house"
+	(case = 4) ifTrue: [ 
+		p1Reduced add: 300.
+		value1 := (self getNumWithOccurance: p1Reduced).
+		
+		p2Reduced add: 300.
+		value2 := (self getNumWithOccurance: p2Reduced).
+		
+		(value1 > value2) ifTrue: [ ^ p1Hand ].
+		(value1 < value2) ifTrue: [ ^ p2Hand ].
+		(value1 = value2) ifTrue: [ 
+			3 timesRepeat: [ 
+				p1Reduced remove: value1.
+				p2Reduced remove: value2.
+			].
+			(p1Reduced at: 1) > (p2Reduced at: 1) ifTrue: [ ^ p1Hand ].
+			(p1Reduced at: 1) < (p2Reduced at: 1) ifTrue: [ ^ p2Hand ].
+		].
+	].
+
+	"hands are both three of a kind"
+	(case = 7) ifTrue: [ 
+		p1Reduced add: 300.
+		value1 := (self getNumWithOccurance: p1Reduced).
+		
+		p2Reduced add: 300.
+		value2 := (self getNumWithOccurance: p2Reduced).
+		
+		(value1 > value2) ifTrue: [ ^ p1Hand ].
+		(value1 < value2) ifTrue: [ ^ p2Hand ].
+		(value1 = value2) ifTrue: [ 
+			3 timesRepeat: [ 
+				p1Reduced remove: value1.
+				p2Reduced remove: value2.
+			].
+			(p1Reduced at: 2) > (p2Reduced at: 2) ifTrue: [ ^ p1Hand ].
+			(p1Reduced at: 2) < (p2Reduced at: 2) ifTrue: [ ^ p2Hand ].
+		].
+	].
+
+	"hands are both two pairs"
+	(case = 8) ifTrue: [ 
+		
+		"reverse the arrays so it looks for higher pairs first"
+		p1Reduced := (self getReversedArr: p1Reduced).
+		p2Reduced := (self getReversedArr: p2Reduced).
+		
+		p1Reduced add: 200.
+		value1 := (self getNumWithOccurance: p1Reduced).
+		
+		p2Reduced add: 200.
+		value2 := (self getNumWithOccurance: p2Reduced).
+		
+		(value1 > value2) ifTrue: [ ^ p1Hand ].
+		(value1 < value2) ifTrue: [ ^ p2Hand ].
+		(value1 = value2) ifTrue: [ 
+			2 timesRepeat: [ 
+				p1Reduced remove: value1.
+				p2Reduced remove: value2.
+			].
+
+			p1Reduced add: 200.
+			value1 := (self getNumWithOccurance: p1Reduced).
+			p2Reduced add: 200.
+			value2 := (self getNumWithOccurance: p2Reduced).
+			
+			(value1 > value2) ifTrue: [ ^ p1Hand ].
+			(value1 < value2) ifTrue: [ ^ p2Hand ].
+			(value1 = value2) ifTrue: [ 
+				2 timesRepeat: [ 
+					p1Reduced remove: value1.
+					p2Reduced remove: value2.
+				].
+				(p1Reduced at: 1) > (p2Reduced at: 1) ifTrue: [ ^ p1Hand ].
+				(p1Reduced at: 1) < (p2Reduced at: 1) ifTrue: [ ^ p2Hand ].
+			].
+		].
+	].
+
+	"hands are both a pair"
+	(case = 9) ifTrue: [ 
+		p1Reduced add: 200.
+		value1 := (self getNumWithOccurance: p1Reduced).
+		
+		p2Reduced add: 200.
+		value2 := (self getNumWithOccurance: p2Reduced).
+		
+		(value1 > value2) ifTrue: [ ^ p1Hand ].
+		(value1 < value2) ifTrue: [ ^ p2Hand ].
+		(value1 = value2) ifTrue: [ 
+			2 timesRepeat: [ 
+				p1Reduced remove: value1.
+				p2Reduced remove: value2.
+			].
+			(p1Reduced at: 3) > (p2Reduced at: 3) ifTrue: [ ^ p1Hand ].
+			(p1Reduced at: 3) < (p2Reduced at: 3) ifTrue: [ ^ p2Hand ].
+		].
+	].

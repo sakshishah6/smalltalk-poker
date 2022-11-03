@@ -1,0 +1,98 @@
+isFullHouse: inputCardArr 
+	"checks for full house (case 5)"
+			
+	| rank rankCountArr rankAndCardsArr handArr |
+	
+	rankCountArr := OrderedCollection new.
+	rankCountArr := (self countEachRank: inputCardArr).
+	
+	handArr := SortedCollection new
+	handArr := SortedCollection sortBlock: [ :a :c | a <= c ].
+	
+    rankAndCardsArr := inputCardArr copyFrom: 1 to: (inputCardArr size).
+
+	"case 1: 3 cards + 3 cards"
+	((rankCountArr occurrencesOf: 3) = 2) 
+	ifTrue: [  
+		rank := (rankCountArr indexOf: 3).
+		"if the rank is an ace, add all occurances to the hand array"
+		(rank = 1) ifTrue: [ 
+			"add the ace triplet"
+			rankAndCardsArr add: rank.
+			handArr addAll: (self get3CardsWithRank: rankAndCardsArr).
+			rankAndCardsArr remove: rank.
+			rankCountArr at: rank put: 0.
+			"add the next triplet as a pair"
+			rank := (rankCountArr indexOf: 3).
+			rankAndCardsArr add: rank.
+			handArr addAll: (self get2CardsWithRank: rankAndCardsArr).
+			rankAndCardsArr remove: rank.
+			rankCountArr at: rank put: 0.
+		]
+		ifFalse: [ 
+			"add the first triplet (lower one) as a pair"
+			rankAndCardsArr add: rank.
+			handArr addAll: (self get2CardsWithRank: rankAndCardsArr).
+			rankAndCardsArr remove: rank.
+			rankCountArr at: rank put: 0.
+			"add the next triplet"
+			rank := (rankCountArr indexOf: 3).
+			rankAndCardsArr add: rank.
+			handArr addAll: (self get3CardsWithRank: rankAndCardsArr).
+			rankAndCardsArr remove: rank.
+			rankCountArr at: rank put: 0.
+		].		
+	].
+
+	"case 2: 3 cards + 2 cards + 2 cards"
+	((rankCountArr occurrencesOf: 3) = 1) & ((rankCountArr occurrencesOf: 2) = 2) 
+	ifTrue: [ 
+		"add the triplet"
+		rank := (rankCountArr indexOf: 3).
+		rankAndCardsArr add: rank.
+		handArr addAll: (self get3CardsWithRank: rankAndCardsArr).
+		rankAndCardsArr remove: rank.
+		rankCountArr at: rank put: 0.
+		
+        "add the pair"
+        rank := (rankCountArr indexOf: 2).
+        
+		"if the rank is an ace, add all occurances to the hand array"
+		(rank = 1) ifTrue: [ 
+			"add the ace pair"
+			rankAndCardsArr add: rank.
+			handArr addAll: (self get2CardsWithRank: rankAndCardsArr).
+			rankAndCardsArr remove: rank.
+			rankCountArr at: rank put: 0.
+		]
+		ifFalse: [ 
+			"don't add the first pair (lower one)"
+			rankCountArr at: rank put: 0.
+			"add the next pair"
+			rank := (rankCountArr indexOf: 2).
+			rankAndCardsArr add: rank.
+			handArr addAll: (self get2CardsWithRank: rankAndCardsArr).
+			rankAndCardsArr remove: rank.
+			rankCountArr at: rank put: 0.
+		].
+	].
+
+	"case 3: 3 cards + 2 cards"
+	((rankCountArr occurrencesOf: 3) = 1) & ((rankCountArr occurrencesOf: 2) = 1) 
+	ifTrue: [ 
+		"add the triplet"
+		rank := (rankCountArr indexOf: 3).
+		rankAndCardsArr add: rank.
+		handArr addAll: (self get3CardsWithRank: rankAndCardsArr).
+		rankAndCardsArr remove: rank.
+		rankCountArr at: rank put: 0.
+
+		"add the pair"
+		rank := (rankCountArr indexOf: 2).
+		rankAndCardsArr add: rank.
+		handArr addAll: (self get2CardsWithRank: rankAndCardsArr).
+		rankAndCardsArr remove: rank.
+		rankCountArr at: rank put: 0.
+	].
+
+	^ handArr.

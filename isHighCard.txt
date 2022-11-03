@@ -1,0 +1,13 @@
+isHighCard: inputCardArr
+	"returns the five highest cards (case 10)"
+			
+	| handArr |
+
+	handArr := SortedCollection new.
+	handArr := SortedCollection sortBlock: [ :a :c | a <= c ].
+	
+	inputCardArr add: 500.
+	
+	handArr := (self getHighestCards: inputCardArr).
+	
+	^ handArr.

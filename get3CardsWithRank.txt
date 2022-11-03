@@ -1,0 +1,21 @@
+get3CardsWithRank: inputArr
+	"returns an array with all the cards at required indexes/ranks"
+			
+	| rankIndex rank inputCardArr card returnArr |
+	
+	inputCardArr := OrderedCollection new.
+	inputCardArr := inputArr copyFrom: 1 to: (inputArr size - 1).
+	rankIndex := (inputArr at: (inputArr size)).
+	
+	returnArr := SortedCollection new.
+	returnArr := SortedCollection sortBlock: [ :a :c | a <= c ].
+	
+	1 to: (inputCardArr size) do: [ 
+		:i | card := (inputCardArr at: i).
+		rank := (self getRank: card).
+		(rankIndex = rank) ifTrue: [
+			returnArr add: card. 
+		].
+	].
+
+	^ returnArr.

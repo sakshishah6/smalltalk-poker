@@ -1,0 +1,20 @@
+getRank: card
+	"get the rank of given card"
+			
+	| remainder |
+
+	remainder := card % 13.
+	
+	(remainder = 1) ifTrue: [ ^ 1 ].
+	(remainder = 2) ifTrue: [ ^ 2 ].
+	(remainder = 3) ifTrue: [ ^ 3 ].
+	(remainder = 4) ifTrue: [ ^ 4 ].
+	(remainder = 5) ifTrue: [ ^ 5 ].
+	(remainder = 6) ifTrue: [ ^ 6 ].
+	(remainder = 7) ifTrue: [ ^ 7 ].
+	(remainder = 8) ifTrue: [ ^ 8 ].
+	(remainder = 9) ifTrue: [ ^ 9 ].
+	(remainder = 10) ifTrue: [ ^ 10 ].
+	(remainder = 11) ifTrue: [ ^ 11 ].
+	(remainder = 12) ifTrue: [ ^ 12 ].
+	(remainder = 0) ifTrue: [ ^ 13 ].

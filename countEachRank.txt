@@ -1,0 +1,29 @@
+countEachRank: inputCardArr
+	"count the number of cards that have each rank"	
+			
+	| countRankArr remainder currentCard |
+	
+	countRankArr := OrderedCollection new.
+	countRankArr addAll: #(0 0 0 0 0 0 0 0 0 0 0 0 0).
+	
+	remainder := 0.
+	
+	1 to: (inputCardArr size) do: [ 
+		:i | currentCard := (inputCardArr at: i).
+		remainder := (currentCard % 13).
+	
+		"consider 2 to queen"
+		1 to: 12 do: [ 
+			:j | (remainder = j) 
+			ifTrue: [ 
+				countRankArr at: j put: ((countRankArr at: j) + 1).
+			].
+		].
+	
+		"consider king"
+		(remainder = 0) ifTrue: [ 
+			countRankArr at: 13 put: ((countRankArr at: 13) + 1).
+		].
+	].
+	
+	^ countRankArr.

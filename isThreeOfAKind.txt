@@ -1,0 +1,36 @@
+isThreeOfAKind: inputCardArr 
+	"checks for three of a kind (case 7)"
+			
+	| rank rankCountArr rankAndCardsArr handArr card |
+	
+	rankCountArr := OrderedCollection new.
+	rankCountArr := (self countEachRank: inputCardArr).
+	
+	rankAndCardsArr := OrderedCollection new.
+	
+	handArr := SortedCollection new.
+	handArr := SortedCollection sortBlock: [ :a :c | a <= c ].
+
+	((rankCountArr occurrencesOf: 3) = 1) 
+	ifTrue: [
+		"get the triplet"
+		rank := (rankCountArr indexOf: 3).
+		rankAndCardsArr := inputCardArr copyFrom: 1 to: (inputCardArr size).
+		rankAndCardsArr add: rank.
+		handArr addAll: (self get3CardsWithRank: rankAndCardsArr).
+		rankAndCardsArr remove: rank.
+		
+		"remove the cards the handArr already contains"
+		1 to: (inputCardArr size) do: [
+			:n | card := (inputCardArr at: n).
+			(handArr includes: card) ifTrue: [ 
+				rankAndCardsArr remove: card ifAbsent: [].
+			]
+		].
+		
+		"get the highest cards left"
+		rankAndCardsArr add: 200.
+		handArr addAll: (self getHighestCards: rankAndCardsArr).
+	].
+
+	^ handArr.

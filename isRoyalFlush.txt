@@ -1,0 +1,22 @@
+isRoyalFlush: inputCardArr 
+	"checks for royal flush (case 1)"
+	
+	| handArr checkArr |
+	
+	handArr := SortedCollection new.
+	handArr := SortedCollection sortBlock: [ :a :c | a <= c ].
+	
+	checkArr := OrderedCollection new.
+	checkArr := (self isStraightFlush: inputCardArr).
+	
+	(checkArr isEmpty) ifTrue: [ ^ handArr ].
+	
+	((((checkArr at: 1) % 13) = 1) &
+	(((checkArr at: 2) % 13) = 10) &
+	(((checkArr at: 3) % 13) = 11) &
+	(((checkArr at: 4) % 13) = 12) &
+	(((checkArr at: 5) % 13) = 0))
+		ifTrue: [ 
+			handArr := checkArr.
+		].
+	^ handArr.
